@@ -960,9 +960,7 @@ async function showExecutionError(msg) {
   if (rowCount) rowCount.textContent = 'ERRO';
 }
 
-function escapeHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+// Removida declaração duplicada de escapeHtml (definida na linha 187)
 
 async function executeSimQuery(sql) {
   if (!window.__simulator) {
