@@ -1,20 +1,173 @@
 import { modules, badges } from './content.js';
-const KEY='queryquest-progress';
-const fresh=()=>({xp:0,done:[],answers:{},streak:1,last:new Date().toDateString(),badges:[]});
-let state=JSON.parse(localStorage.getItem(KEY)||'null')||fresh();
-function updateStreak(){const today=new Date();const todayKey=today.toDateString();if(state.last===todayKey)return;const previous=new Date(state.last);const diff=Math.round((new Date(todayKey)-new Date(previous.toDateString()))/86400000);state.streak=diff===1?state.streak+1:1;state.last=todayKey;localStorage.setItem(KEY,JSON.stringify(state));}
-updateStreak();
-const allLessons=()=>modules.flatMap(m=>m.lessons);
-const save=()=>{localStorage.setItem(KEY,JSON.stringify(state));render();};
-const level=()=>state.xp>=1200?5:state.xp>=800?4:state.xp>=450?3:state.xp>=200?2:1;
-const levelName=['','Explorador','Consultor SQL','Ferreiro ORM','Guardião das Transações','Arquiteto da SPA'][level()];
-const nextXp=[0,200,450,800,1200,1600][level()];
-const esc=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
-function nav(){document.querySelector('#module-nav').innerHTML=modules.map((m,i)=>{let done=m.lessons.filter(l=>state.done.includes(l.id)).length;let unlocked=i===0||modules[i-1].lessons.every(l=>state.done.includes(l.id));return `<div class="nav-module ${unlocked?'':'locked'}" data-module="${m.id}"><div class="nav-title"><span class="nav-icon ${m.color}">${m.icon}</span><div><b>${String(i+1).padStart(2,'0')} ${m.title}</b><small>${done}/${m.lessons.length} aulas</small></div><span class="chev">${unlocked?'›':'🔒'}</span></div><div class="nav-progress"><i style="width:${done/m.lessons.length*100}%"></i></div></div>`}).join('');document.querySelectorAll('[data-module]').forEach(x=>x.onclick=()=>{if(!x.classList.contains('locked')) location.hash='#/module/'+x.dataset.module});}
-function moduleView(id){let m=modules.find(x=>x.id===id)||modules[0];let unlocked=modules.indexOf(m)===0||modules[modules.indexOf(m)-1].lessons.every(l=>state.done.includes(l.id));return `<section class="content"><div class="eyebrow"><a href="#/">TRILHA</a> / MÓDULO ${String(modules.indexOf(m)+1).padStart(2,'0')}</div><div class="section-head module-view-head"><div><h1>${m.title}</h1><p>${m.desc}</p></div><span class="completion">${m.lessons.filter(l=>state.done.includes(l.id)).length}/${m.lessons.length} concluídas</span></div><div class="lesson-list">${m.lessons.map((l,i)=>`<article class="lesson-row ${state.done.includes(l.id)?'is-done':''} ${unlocked?'':'is-locked'}" data-lesson="${l.id}"><span class="lesson-number">${state.done.includes(l.id)?'✓':String(i+1).padStart(2,'0')}</span><div><span class="tag ${m.color}">${l.tag}</span><h3>${l.title}</h3><small>${l.time} · ✦ ${l.xp} XP</small></div><b>${unlocked?'→':'🔒'}</b></article>`).join('')}</div></section>`}
-function dashboard(){let pct=Math.round(state.done.length/allLessons().length*100);let current=allLessons().find(l=>!state.done.includes(l.id))||allLessons().at(-1);return `<section class="content"><div class="eyebrow">BEM-VINDO DE VOLTA, DEV <span class="pulse"></span></div><div class="hero"><div><h1>Seu próximo <em>bug</em><br/>vai virar <em>XP.</em></h1><p>Aprenda SQL e SQLAlchemy construindo algo real,<br class="desktop"/> uma query de cada vez.</p><button class="primary" data-go="${current.id}">Continuar trilha <span>→</span></button></div><div class="hero-orb"><div class="orb-ring"></div><span>⌘</span><small>BUILD<br/>YOUR<br/>QUERY</small></div></div><div class="stats-grid"><div class="stat-card"><span class="stat-icon cyan">↗</span><div><small>PROGRESSO TOTAL</small><strong>${pct}%</strong><div class="line"><i style="width:${pct}%"></i></div></div></div><div class="stat-card"><span class="stat-icon orange">ϟ</span><div><small>XP ACUMULADO</small><strong>${state.xp} <small>/ 1200</small></strong><div class="line orange-line"><i style="width:${Math.min(state.xp/1200*100,100)}%"></i></div></div></div><div class="stat-card"><span class="stat-icon pink">♨</span><div><small>SEQUÊNCIA ATUAL</small><strong>${state.streak} <small>dias</small></strong><span class="sub">Melhor: ${Math.max(state.streak,3)} dias</span></div></div></div><div class="section-head"><div><div class="eyebrow">MAPA DA TRILHA</div><h2>Do primeiro SELECT ao ORM</h2></div><span class="completion">${state.done.length}/${allLessons().length} concluídas</span></div><div class="module-grid">${modules.map((m,i)=>{let open=i===0||modules[i-1].lessons.every(l=>state.done.includes(l.id));let d=m.lessons.filter(l=>state.done.includes(l.id)).length;return `<article class="module-card ${open?'':'is-locked'}" data-module="${m.id}"><div class="module-top"><span class="module-icon ${m.color}">${m.icon}</span><span class="module-status">${d===m.lessons.length?'✓ CONCLUÍDO':open?'MÓDULO '+String(i+1).padStart(2,'0'):'🔒 BLOQUEADO'}</span></div><h3>${m.title}</h3><p>${m.desc}</p><div class="card-footer"><span>${d}/${m.lessons.length} aulas</span><b>${open?'Explorar módulo →':'Complete o anterior'}</b></div></article>`}).join('')}</div><div class="section-head badges-head"><div><div class="eyebrow">CONQUISTAS</div><h2>Badges desbloqueáveis</h2></div><span class="completion">${state.badges.length}/${badges.length}</span></div><div class="badges-grid">${badges.map(b=>`<div class="badge-card ${state.badges.includes(b.id)?'earned':''}"><span>${b.icon}</span><div><b>${b.title}</b><small>${b.desc}</small></div></div>`).join('')}</div></section>`}
-function lessonView(id){let l=allLessons().find(x=>x.id===id)||allLessons()[0],m=modules.find(x=>x.lessons.some(y=>y.id===l.id));return `<section class="content lesson-page"><div class="eyebrow"><a href="#/">TRILHA</a> / ${m.title.toUpperCase()}</div><div class="lesson-heading"><div><span class="tag ${m.color}">${l.tag}</span><h1>${l.title}</h1><p>${l.intro}</p></div><div class="lesson-meta"><span>◷ ${l.time}</span><span class="xp-reward">✦ +${l.xp} XP</span></div></div><div class="lesson-layout"><div><div class="code-tabs"><span class="active">SQL</span><span>PYTHON / SQLALCHEMY</span></div><div class="code-block"><div class="code-head"><span><i></i><i></i><i></i></span><small>queryquest / lesson.sql</small><button class="copy" data-copy="${esc(l.code)}">⧉ copiar</button></div><pre>${esc(l.code)}</pre></div><div class="code-block python"><div class="code-head"><small>main.py</small></div><pre>${esc(l.py)}</pre></div></div><aside class="challenge"><div class="challenge-label">⚡ CHECKPOINT</div><h3>Teste seu conhecimento</h3><p>${l.quiz.q}</p><div class="options">${l.quiz.opts.map((o,i)=>`<button class="option" data-answer="${i}">${o}</button>`).join('')}</div><div id="feedback"></div></aside></div><button class="complete ${state.done.includes(l.id)?'completed':''}" data-complete="${l.id}">${state.done.includes(l.id)?'✓ Lição concluída':'Marcar lição como concluída'} <span>${state.done.includes(l.id)?'':'+'+l.xp+' XP'}</span></button></section>`}
-function render(){nav();document.querySelector('#xp').textContent=state.xp;document.querySelector('#level').textContent=level();document.querySelector('#streak').textContent=state.streak;let hash=location.hash;let lesson=hash.match(/lesson\/(\w+)/), mod=hash.match(/module\/(\w+)/);document.querySelector('#app').innerHTML=lesson?lessonView(lesson[1]):mod?moduleView(mod[1]):dashboard();document.querySelector('#crumb').textContent=lesson?'LIÇÃO':mod?'MÓDULO':'INÍCIO';bind();}
-function bind(){document.querySelectorAll('[data-module]').forEach(x=>x.onclick=()=>{if(!x.classList.contains('is-locked')&&!x.classList.contains('locked'))location.hash='#/module/'+x.dataset.module});document.querySelectorAll('[data-lesson]').forEach(x=>x.onclick=()=>{if(!x.classList.contains('is-locked'))location.hash='#/lesson/'+x.dataset.lesson});document.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>location.hash='#/lesson/'+x.dataset.go);document.querySelectorAll('.module-card:not(.is-locked)').forEach(x=>x.onclick=()=>location.hash='#/lesson/'+modules.find(m=>m.id===x.dataset.module).lessons[0].id);document.querySelectorAll('.option').forEach(x=>x.onclick=()=>{document.querySelectorAll('.option').forEach(b=>b.classList.remove('selected','wrong','right'));let l=allLessons().find(x=>location.hash.includes(x.id));let ok=+x.dataset.answer===l.quiz.answer;x.classList.add(ok?'right':'wrong');document.querySelector('#feedback').innerHTML=`<div class="feedback ${ok?'good':'bad'}"><b>${ok?'Muito bem! +20 XP':'Quase! Tenta de novo.'}</b><span>${l.quiz.why}</span></div>`;if(ok&&!state.answers[l.id]){state.answers[l.id]=1;state.xp+=20;if(!state.badges.includes('first'))state.badges.push('first');save()} });document.querySelectorAll('[data-complete]').forEach(x=>x.onclick=()=>{if(!state.done.includes(x.dataset.complete)){state.done.push(x.dataset.complete);let l=allLessons().find(y=>y.id===x.dataset.complete);state.xp+=l.xp;toast(`+${l.xp} XP · lição concluída!`);save()} });document.querySelectorAll('[data-copy]').forEach(x=>x.onclick=()=>{navigator.clipboard?.writeText(x.dataset.copy);toast('Query copiada!')});}
-function toast(t){let e=document.querySelector('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2200)}
-document.querySelector('#reset-btn').onclick=()=>{if(confirm('Reiniciar todo o progresso?')){state=fresh();save();}};document.querySelector('#menu-btn').onclick=()=>document.querySelector('#sidebar').classList.toggle('open');window.addEventListener('hashchange',render);render();
+const KEY = 'queryquest-progress';
+const fresh = () => ({ xp: 0, done: [], answers: {}, streak: 1, last: new Date().toDateString(), badges: [] });
+let state = JSON.parse(localStorage.getItem(KEY) || 'null') || fresh();
+
+function updateStreak() {
+    const today = new Date();
+    const todayKey = today.toDateString();
+    if (state.last === todayKey) return;
+    const prev = new Date(state.last);
+    prev.setDate(prev.getDate() + 1);
+    state.streak = prev.toDateString() === todayKey ? state.streak + 1 : 1;
+    state.last = todayKey;
+    saveState();
+}
+
+function saveState() {
+    localStorage.setItem(KEY, JSON.stringify(state));
+}
+
+function xp() { return state.xp; }
+function level() { return Math.floor(xp() / 300) + 1; }
+function progressToNext() {
+    const cur = xp() % 300;
+    return Math.round((cur / 300) * 100);
+}
+
+function earned(b) { return state.badges.includes(b.id); }
+function grant(b) {
+    if (!earned(b)) {
+        state.badges.push(b.id);
+        saveState();
+        return true;
+    }
+    return false;
+}
+
+function checkBadges() {
+    if (state.done.length >= 1) grant(badges.find(b => b.id === 'first'));
+    if (state.streak >= 3) grant(badges.find(b => b.id === 'streak'));
+    const joinMod = modules.find(m => m.id === 'm3');
+    if (joinMod && joinMod.lessons.every(l => state.done.includes(l.id))) grant(badges.find(b => b.id === 'join'));
+    const finalMod = modules.find(m => m.id === 'm5');
+    if (finalMod && finalMod.lessons.every(l => state.done.includes(l.id))) grant(badges.find(b => b.id === 'finish'));
+}
+
+function lessonDone(id) {
+    if (!state.done.includes(id)) {
+        const lesson = modules.flatMap(m => m.lessons).find(l => l.id === id);
+        if (lesson) {
+            state.xp += lesson.xp;
+            state.done.push(id);
+            updateStreak();
+            saveState();
+            checkBadges();
+        }
+    }
+}
+
+const $ = document.querySelector.bind(document);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+function render(root, html) {
+    root.innerHTML = html;
+    bind();
+}
+
+function viewDashboard() {
+    const m = modules.map(mod => {
+        const done = mod.lessons.filter(l => state.done.includes(l.id)).length;
+        const total = mod.lessons.length;
+        const pct = total ? Math.round((done / total) * 100) : 0;
+        const idx = modules.indexOf(mod);
+        const prev = idx > 0 ? modules[idx - 1] : null;
+        const locked = prev && !prev.lessons.every(l => state.done.includes(l.id));
+        return `<div class="mod ${locked ? 'locked' : ''}" data-id="${mod.id}"><div class="mod-head"><span class="mod-icon" style="color:var(--${mod.color})">${mod.icon}</span><div><h3>${mod.title}</h3><p>${mod.subtitle}</p></div></div><div class="mod-progress"><div class="bar"><i style="width:${pct}%"></i></div><span>${done}/${total} lições</span></div></div>`;
+    }).join('');
+    render($('#app'), `<section class="dash"><header><h1>QueryQuest</h1><div class="stats"><div class="stat"><b>${xp()}</b> XP</div><div class="stat"><b>Nv.${level()}</b></div><div class="stat"><b>${state.streak}</b> dias</div></div></header><div class="xp-bar"><i style="width:${progressToNext()}%"></i></div><div class="modules">${m}</div><footer><button id="reset">Resetar progresso</button></footer></section>`);
+}
+
+function viewModule(modId) {
+    const mod = modules.find(m => m.id === modId);
+    if (!mod) return viewDashboard();
+    const idx = modules.indexOf(mod);
+    const prev = idx > 0 ? modules[idx - 1] : null;
+    const locked = prev && !prev.lessons.every(l => state.done.includes(l.id));
+    const lessons = mod.lessons.map(l => {
+        const done = state.done.includes(l.id);
+        return `<button class="lesson ${done ? 'done' : ''}" data-id="${l.id}" ${locked ? 'disabled' : ''}><span>${l.tag ? '<span class="tag">' + l.tag + '</span>' : ''}<strong>${l.title}</strong></span>${done ? '✓' : ''}</button>`;
+    }).join('');
+    render($('#app'), `<section class="mod-view"><header><button class="back" data-view="dash">←</button><div><h2>${mod.icon} ${mod.title}</h2><p>${mod.desc}</p></div></header><div class="lessons">${lessons}</div></section>`);
+}
+
+function lessonView(modId, lessonId) {
+    const mod = modules.find(m => m.id === modId);
+    const lesson = mod?.lessons.find(l => l.id === lessonId);
+    if (!lesson) return viewModule(modId);
+    const done = state.done.includes(lessonId);
+    const ans = state.answers[lessonId];
+    const showAns = ans !== undefined;
+    const showQuiz = lesson.quiz;
+    let quizHtml = '';
+    if (showQuiz) {
+        quizHtml = `<div class="quiz ${showAns ? 'answered' : ''}"><p>${lesson.quiz.q}</p><div class="opts">${lesson.quiz.opts.map((o, i) => `<button class="opt ${showAns ? (i === lesson.quiz.answer ? 'correct' : i === ans ? 'wrong' : '') : ''}" data-i="${i}" ${showAns ? 'disabled' : ''}>${o}</button>`).join('')}</div>${showAns ? `<p class="why">${lesson.quiz.why}</p>` : ''}</div>`;
+    }
+    render($('#app'), `<section class="lesson-view" data-mod="${modId}" data-lesson="${lessonId}"><header><button class="back" data-view="mod" data-mod="${modId}">←</button><div><span class="tag">${lesson.tag}</span><h2>${lesson.title}</h2></div></header><article><p>${lesson.intro}</p><div class="code-tabs"><span class="active" data-lang="sql">SQL</span><span data-lang="python">PYTHON / SQLALCHEMY</span></div><pre class="code-block sql"><code>${lesson.code}</code></pre><pre class="code-block python" style="display:none"><code>${lesson.py}</code></pre>${quizHtml}</article><footer><button class="primary" data-action="complete" ${done || (showQuiz && showAns && ans !== lesson.quiz.answer) ? 'disabled' : ''}>${done ? 'Concluída ✓' : (showQuiz && !showAns ? 'Responder primeiro' : (showQuiz && showAns && ans !== lesson.quiz.answer ? 'Resposta incorreta, tente novamente' : 'Marcar como concluída'))}</button></footer></section>`);
+}
+
+function bind() {
+    $('#reset')?.addEventListener('click', () => {
+        if (confirm('Apagar todo progresso?')) {
+            localStorage.removeItem(KEY);
+            state = fresh();
+            location.reload();
+        }
+    });
+
+    $$('.mod:not(.locked)').forEach(b => b.addEventListener('click', () => viewModule(b.dataset.id)));
+
+    $$('.lesson:not([disabled])').forEach(b => {
+        b.addEventListener('click', () => {
+            const lessonId = b.dataset.id;
+            const lesson = modules.flatMap(m => m.lessons).find(l => l.id === lessonId);
+            if (lesson) {
+                const mod = modules.find(m => m.lessons.some(l => l.id === lessonId));
+                lessonView(mod.id, lessonId);
+            }
+        });
+    });
+
+    $$('.back[data-view="dash"]').forEach(b => b.addEventListener('click', viewDashboard));
+    $$('.back[data-view="mod"]').forEach(b => b.addEventListener('click', () => viewModule(b.dataset.mod)));
+
+    $$('.opt').forEach(b => b.addEventListener('click', () => {
+        const container = b.closest('.lesson-view');
+        const modId = container?.dataset.mod;
+        const lessonId = container?.dataset.lesson;
+        const mod = modules.find(m => m.id === modId);
+        const lesson = mod?.lessons.find(l => l.id === lessonId);
+
+        if (lesson) {
+            const optIdx = parseInt(b.dataset.i);
+            state.answers[lesson.id] = optIdx;
+            saveState();
+            if (optIdx === lesson.quiz.answer) {
+                lessonDone(lesson.id);
+            }
+            lessonView(modId, lessonId);
+        }
+    }));
+
+    $$('[data-action="complete"]').forEach(b => b.addEventListener('click', () => {
+        const container = b.closest('.lesson-view');
+        const modId = container?.dataset.mod;
+        const lessonId = container?.dataset.lesson;
+        if (lessonId) {
+            lessonDone(lessonId);
+            lessonView(modId, lessonId);
+        }
+    }));
+
+    $$('.code-tabs span').forEach(tab => tab.addEventListener('click', () => {
+        const container = tab.closest('.lesson-view');
+        container.querySelectorAll('.code-tabs span').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const lang = tab.dataset.lang;
+        container.querySelectorAll('.code-block').forEach(block => {
+            block.style.display = block.classList.contains(lang) ? 'block' : 'none';
+        });
+    }));
+}
+
+viewDashboard();
