@@ -1,0 +1,53 @@
+/* QueryQuest visual polish: progressive layout, readable density and resilient mobile UI */
+:root {
+  --content-max: 1180px;
+  --surface-raised: #132923;
+  --line-strong: #315a50;
+}
+
+body { overflow-x: hidden; }
+.main { min-width: 0; }
+.topbar { position: sticky; top: 0; z-index: 20; background: rgba(8, 11, 18, .92); backdrop-filter: blur(14px); }
+.content, #app { width: 100%; }
+.content { max-width: var(--content-max); }
+.module-card, .lesson-row, .challenge, .stat, .badge-card { box-shadow: 0 10px 30px rgba(0,0,0,.12); }
+.module-card:focus-visible, .lesson-row:focus-visible, .nav-module:focus-visible, .primary:focus-visible, .secondary:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+
+@media (min-width: 901px) {
+  .modules { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .module-card { min-height: 220px; padding: 22px; }
+  .content { padding-left: clamp(32px, 5vw, 76px); padding-right: clamp(32px, 5vw, 76px); }
+}
+
+@media (max-width: 680px) {
+  html { font-size: 15px; }
+  .topbar { height: 64px; padding: 0 12px; }
+  .breadcrumb { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .top-stats { gap: 8px; font-size: 10px; }
+  .top-stats .avatar { display: none; }
+  .content { padding: 28px 16px 92px; }
+  .dash header h1, .lesson-heading h1 { font-size: clamp(32px, 11vw, 48px); letter-spacing: -1.5px; }
+  .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 32px; }
+  .stat { min-width: 0; padding: 12px; gap: 8px; }
+  .stat strong { font-size: 20px; }
+  .modules, .badges-grid { grid-template-columns: 1fr; }
+  .module-card { min-height: 0; padding: 16px; }
+  .module-card h3 { margin-top: 12px; }
+  .section-head, .lesson-heading { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .section-head h1 { font-size: 34px; letter-spacing: -1px; }
+  .mod-view header { gap: 8px; }
+  .mod-view header h2 { font-size: 24px; }
+  .lesson-layout { grid-template-columns: 1fr; gap: 16px; }
+  .challenge { padding: 18px; }
+  .lesson-row { padding: 14px; gap: 11px; }
+  .lesson-row h3 { font-size: 14px; }
+  pre { font-size: 11px; padding: 14px; overflow-x: auto; white-space: pre; word-break: normal; }
+  .code-block { max-width: 100%; overflow: hidden; }
+  section > footer { justify-content: stretch; }
+  section > footer .complete { width: 100%; }
+  .toast { right: 12px; bottom: 76px; left: 12px; text-align: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}

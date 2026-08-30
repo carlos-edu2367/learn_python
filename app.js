@@ -3,10 +3,15 @@
 // Navegação, estado, renderização, simulador SQL integrado
 // ============================================================
 
-import { modules, badges } from './content.js';
+import { modules as moduleCatalog, badges } from './content.js';
 
 /* ---- Estado ---- */
 const STORAGE_KEY = 'queryquest-progress-v2';
+
+// Ordem didática publicada: fundamentos → consultas → operações → ORM → transações → projeto.
+// Os IDs permanecem estáveis para preservar o progresso salvo.
+export const TRAIL_ORDER = ['m1', 'm2', 'm6', 'm7', 'm8', 'm3', 'm4', 'm5'];
+const modules = TRAIL_ORDER.map(id => moduleCatalog.find(module => module.id === id)).filter(Boolean);
 
 function freshState() {
   return {
