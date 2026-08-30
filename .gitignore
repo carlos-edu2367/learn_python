@@ -1,0 +1,41 @@
+# Dependências
+node_modules/
+
+# Builds e ferramentas locais
+.vercel/
+dist/
+build/
+.cache/
+
+# Python: caches e ambientes locais
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# Configurações e segredos locais
+.env
+.env.*
+!.env.example
+*.local
+
+# Sistema operacional e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Logs e arquivos temporários
+*.log
+*.tmp
+*.temp
+coverage/
+.pytest_cache/
+.mypy_cache/
+
+# Arquivos de desenvolvimento local
+*.sqlite
+*.sqlite3

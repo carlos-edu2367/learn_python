@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07120f" />
+  <title>QueryQuest — SQL & SQLAlchemy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><span class="brand-mark">&gt;_</span><span>Query<span class="accent">Quest</span></span></div>
+      <div class="sidebar-label">SUA TRILHA</div>
+      <nav id="module-nav" aria-label="Módulos da trilha"></nav>
+      <div class="sidebar-bottom">
+        <div class="mini-tip"><span>⌘</span><div><strong>Dica rápida</strong><small>Aprenda fazendo. Errar aqui faz parte.</small></div></div>
+        <button class="reset-btn" id="reset-btn">↻ Reiniciar progresso</button>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <button class="mobile-menu" id="menu-btn" aria-label="Abrir menu">☰</button>
+        <div class="breadcrumb"><span>TRILHA</span><i>/</i><strong id="crumb">INÍCIO</strong></div>
+        <div class="top-stats"><span class="streak">🔥 <b id="streak">1</b> dia</span><span class="level-pill">LV <b id="level">1</b></span><span class="xp-pill"><b id="xp">0</b> XP</span><div class="avatar">V</div></div>
+      </header>
+      <div id="app"></div>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
