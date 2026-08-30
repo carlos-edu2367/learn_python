@@ -12,26 +12,52 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Skip link para acessibilidade -->
+  <a href="#app" class="skip-link">Pular para o conteúdo principal</a>
+
   <div class="app-shell">
-    <aside class="sidebar" id="sidebar">
+    <!-- Sidebar Desktop / Drawer Mobile -->
+    <aside class="sidebar" id="sidebar" aria-label="Navegação da trilha">
       <div class="brand"><span class="brand-mark">&gt;_</span><span>Query<span class="accent">Quest</span></span></div>
       <div class="sidebar-label">SUA TRILHA</div>
       <nav id="module-nav" aria-label="Módulos da trilha"></nav>
       <div class="sidebar-bottom">
         <div class="mini-tip"><span>⌘</span><div><strong>Dica rápida</strong><small>Aprenda fazendo. Errar aqui faz parte.</small></div></div>
-        <button class="reset-btn" id="reset-btn">↻ Reiniciar progresso</button>
+        <button class="reset-btn" id="reset-btn" aria-label="Reiniciar progresso">↻ Reiniciar</button>
       </div>
     </aside>
+
+    <!-- Overlay para drawer mobile -->
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+
+    <!-- Main Content Area -->
     <main class="main">
+      <!-- Topbar -->
       <header class="topbar">
-        <button class="mobile-menu" id="menu-btn" aria-label="Abrir menu">☰</button>
-        <div class="breadcrumb"><span>TRILHA</span><i>/</i><strong id="crumb">INÍCIO</strong></div>
-        <div class="top-stats"><span class="streak">🔥 <b id="streak">1</b> dia</span><span class="level-pill">LV <b id="level">1</b></span><span class="xp-pill"><b id="xp">0</b> XP</span><div class="avatar">V</div></div>
+        <button class="mobile-menu" id="menu-btn" aria-label="Abrir menu de navegação">☰</button>
+        <div class="breadcrumb" id="breadcrumb"><span>TRILHA</span><i>/</i><strong id="crumb">INÍCIO</strong></div>
+        <div class="top-stats">
+          <span class="streak" aria-label="Dias de streak"><b id="fire">🔥</b> <b id="streak">1</b></span>
+          <span class="level-pill" aria-label="Nível atual"><b id="level">1</b></span>
+          <span class="xp-pill" aria-label="Pontos XP"><b id="xp">0</b></span>
+          <div class="avatar" aria-hidden="true">V</div>
+        </div>
       </header>
-      <div id="app"></div>
+
+      <!-- Dynamic content renders here -->
+      <div id="app" role="main" tabindex="-1"></div>
+
+      <!-- Bottom bar mobile only -->
+      <footer class="bottom-bar" id="bottom-bar" style="display:none;">
+        <button class="bb-btn active" data-view="dash" aria-label="Dashboard">🏠 Início</button>
+        <button class="bb-btn" data-action="simulator" aria-label="Simulador SQL">⚡ SQL</button>
+      </footer>
     </main>
   </div>
-  <div id="toast" class="toast" role="status"></div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast" role="alert" aria-live="polite"></div>
+
   <script type="module" src="app.js"></script>
 </body>
 </html>
