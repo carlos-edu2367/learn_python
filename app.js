@@ -106,10 +106,9 @@ function showToast(msg) {
 
 /* ---- Topbar Stats ---- */
 function updateTopbar() {
-  const $ = document.getElementById.bind(document);
-  const elXP  = $('xp');
-  const elLvl = $('level');
-  const elStr = $('streak');
+  const elXP  = document.getElementById('xp');
+  const elLvl = document.getElementById('level');
+  const elStr = document.getElementById('streak');
   if (elXP)  elXP.textContent  = state.xp;
   if (elLvl) elLvl.textContent = lvl();
   if (elStr) elStr.textContent = state.streak;
