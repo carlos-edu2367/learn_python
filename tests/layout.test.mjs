@@ -20,6 +20,19 @@ test('polimento visual cobre mobile, desktop e reduced motion', () => {
   assert.match(css, /overflow-x: auto/);
 });
 
+test('dashboard possui espaçamento explícito entre cards e blocos', () => {
+  assert.match(css, /\.dash \.modules,\s*\.dash \.badges-grid,\s*\.dash \.stats \{ gap: 16px; \}/);
+});
+
+test('sidebar possui espaçamento explícito entre itens', () => {
+  assert.match(css, /\.sidebar \.module-nav,\s*\.sidebar \.nav-list \{ gap: 10px; \}/);
+  assert.match(css, /\.sidebar \.nav-module,\s*\.sidebar \.nav-item \{ margin-bottom: 0; \}/);
+});
+
+test('correção não redefine o identificador de atividade', () => {
+  assert.doesNotMatch(css, /lesson-number/);
+});
+
 test('foco visível e largura de conteúdo são definidos', () => {
   assert.match(css, /:focus-visible/);
   assert.match(css, /--content-max: 1180px/);

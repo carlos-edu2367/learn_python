@@ -1,4 +1,14 @@
 /* QueryQuest visual polish: progressive layout, readable density and resilient mobile UI */
+/* Dashboard and sidebar spacing correction (scoped; activity marker is untouched). */
+.dash .modules,
+.dash .badges-grid,
+.dash .stats { gap: 16px; }
+.sidebar .module-nav,
+.sidebar .nav-list { gap: 10px; }
+.sidebar .nav-module,
+.sidebar .nav-item { margin-bottom: 0; }
+
+
 :root {
   --content-max: 1180px;
   --surface-raised: #132923;
