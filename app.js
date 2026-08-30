@@ -279,7 +279,7 @@ function viewDashboard() {
       </footer>
     </section>`;
 
-  $('#app').innerHTML = html;
+  document.getElementById('app').innerHTML = html;
   bindDashboard();
   closeDrawer();
 }
@@ -352,7 +352,7 @@ function viewModule(modId) {
       <div class="lessons">${lessonRows}</div>
     </section>`;
 
-  $('#app').innerHTML = html;
+  document.getElementById('app').innerHTML = html;
   bindModuleView();
   closeDrawer();
 }
@@ -502,7 +502,7 @@ function viewLesson(lessonId) {
       </footer>
     </section>`;
 
-  $('#app').innerHTML = html;
+  document.getElementById('app').innerHTML = html;
   bindLessonView();
   closeDrawer();
 }
@@ -661,7 +661,7 @@ function viewSimulator() {
       </div>
     </section>`;
 
-  $('#app').innerHTML = html;
+  document.getElementById('app').innerHTML = html;
   bindSimulator();
   closeDrawer();
 }
