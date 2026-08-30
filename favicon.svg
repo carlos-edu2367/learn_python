@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">QueryQuest</title>
+  <desc id="desc">Terminal neon com o símbolo de uma consulta SQL</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#102b24"/>
+      <stop offset="1" stop-color="#07110f"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8affdf"/>
+      <stop offset="1" stop-color="#43cdb8"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2.5" flood-color="#62e6d0" flood-opacity=".65"/>
+    </filter>
+  </defs>
+  <rect x="3" y="3" width="58" height="58" rx="15" fill="url(#bg)" stroke="#24564b" stroke-width="2"/>
+  <path d="M15 20h34" stroke="#315f54" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="17" cy="14" r="2" fill="#f58cb8"/>
+  <circle cx="24" cy="14" r="2" fill="#ffad62"/>
+  <circle cx="31" cy="14" r="2" fill="#7de69d"/>
+  <g fill="none" stroke="url(#glow)" stroke-linecap="round" stroke-linejoin="round" filter="url(#shadow)">
+    <path d="m16 29 8 6-8 6" stroke-width="4"/>
+    <path d="M29 43h18" stroke-width="4"/>
+  </g>
+  <path d="M13 51h38" stroke="#1b4239" stroke-width="2" stroke-linecap="round"/>
+</svg>
